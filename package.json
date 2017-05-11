@@ -1,0 +1,22 @@
+{
+  "name": "othello",
+  "version": "1.0.0",
+  "description": "juego de othello con interfaz de prolog en nodejs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "prolog",
+    "nodejs",
+    "othello",
+    "game"
+  ],
+  "author": "Jose Herrera, Kenneth Alvarez",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2",
+    "express3-handlebars": "^0.5.2",
+    "swipl": "^1.0.3"
+  }
+}

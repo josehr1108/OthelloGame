@@ -1,0 +1,17 @@
+.textCentered{
+    text-align: center;
+}
+
+#indexDiv{
+    padding-top: 5%;
+}
+
+#indexDiv div{
+    padding-top: 3%;
+}
+
+select{
+    width: 80px;
+    display: block;
+    margin: 0 auto;
+}
