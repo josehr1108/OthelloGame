@@ -2,6 +2,7 @@ dynamic disk/3.
 dynamic possibleMovement/1.
 dynamic boardSize/1.
 
+
 disk(2,2,"black").
 disk(2,3,"white").
 disk(3,2,"white").

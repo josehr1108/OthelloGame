@@ -2,19 +2,21 @@
     <div class="textCentered" id="indexDiv" ng-controller="AppCtrl">
         <img src="images/othello.png" alt="OthelloGameLogo">
         <h3>Othello</h3>
-        <label>Escoje el tamaño del tablero
-            <select>
-                <option value="4">4x4</option>
-                <option value="5">5x5</option>
-                <option value="6">6x6</option>
-                <option value="7">7x7</option>
-                <option value="8">8x8</option>
-                <option value="9">9x9</option>
-                <option value="10">10x10</option>
-            </select>
-        </label>
-        <div>
-            <a class="button success large">Jugar</a>
-        </div>
+        <form action="/playGame" method="post">
+            <label>Escoje el tamaño del tablero
+                <select name="boardSize">
+                    <option value="4">4x4</option>
+                    <option value="5">5x5</option>
+                    <option value="6">6x6</option>
+                    <option value="7">7x7</option>
+                    <option value="8">8x8</option>
+                    <option value="9">9x9</option>
+                    <option value="10">10x10</option>
+                </select>
+            </label>
+            <div>
+                <button type="submit" class="success button">Jugar!</button>
+            </div>
+        </form>
     </div>
 </div>

@@ -15,6 +15,7 @@
   "author": "Jose Herrera, Kenneth Alvarez",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.2",
     "express3-handlebars": "^0.5.2",
     "swipl": "^1.0.3"
