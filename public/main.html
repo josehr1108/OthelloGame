@@ -1,10 +1,10 @@
 <div class="row">
-    <div class="textCentered" id="indexDiv" ng-controller="AppCtrl">
+    <div class="textCentered" id="indexDiv">
         <img src="images/othello.png" alt="OthelloGameLogo">
         <h3>Othello</h3>
-        <form action="/playGame" method="post">
+        <form>
             <label>Escoje el tamaño del tablero
-                <select name="boardSize">
+                <select ng-model="boardSize">
                     <option value="4">4x4</option>
                     <option value="5">5x5</option>
                     <option value="6">6x6</option>
@@ -15,7 +15,7 @@
                 </select>
             </label>
             <div>
-                <button type="submit" class="success button">Jugar!</button>
+                <button type="submit" ng-click="playGame(boardSize)" class="success button">Jugar!</button>
             </div>
         </form>
     </div>

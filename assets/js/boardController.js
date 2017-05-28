@@ -3,19 +3,6 @@
  */
 
 $(function() {
-    var boardSize = $('#boardSizeInput').val();
-
-    function createTable() {
-        var table = document.getElementById("boardTable");
-        for(var i = 0; i < boardSize; i++){
-            var row =  table.insertRow(i);
-            for(var j = 0; j < boardSize; j++){
-                row.insertCell(j);
-            }
-        }
-    }
-    createTable();
-
     function getPossibleMoves(){
         $.ajax('/possibleMoves',{
            async: false

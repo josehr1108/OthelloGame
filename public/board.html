@@ -1,0 +1,15 @@
+<div class="row">
+    <div id="boardContainer" class="small-10 columns">
+        <table id="boardTable">
+            <tr ng-repeat="n in range(0,boardSize)">
+                <td ng-repeat="n2 in range(0,boardSize)" ng-click="placeDiskAt(n,n2)">
+                    <div></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="small-2 columns textCentered" id="infoDiv">
+        <button type="button" class="button textCentered" ng-click="placeDisks()">Comenzar</button>
+        <span>{{turnMsg}}</span>
+    </div>
+</div>
