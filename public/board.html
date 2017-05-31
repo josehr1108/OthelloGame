@@ -10,6 +10,10 @@
     </div>
     <div class="small-2 columns textCentered" id="infoDiv">
         <button type="button" class="button textCentered" ng-click="placeDisks()">Comenzar</button>
-        <span>{{turnMsg}}</span>
+        <span id="turnMsg">{{turnMsg}}</span>
+        <div id="diskAmountDiv">
+            <span><b>Fichas negras:</b>{{blackAmount}}</span>
+            <span><b>Fichas blancas:</b>{{whiteAmount}}</span>
+        </div>
     </div>
 </div>

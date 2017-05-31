@@ -4,6 +4,7 @@
 
 #indexDiv{
     padding-top: 5%;
+    font-family: 'Exo 2', sans-serif;
 }
 
 #indexDiv div{
@@ -12,6 +13,7 @@
 
 select{
     width: 80px;
+    height: 40px;
     display: block;
     margin: 0 auto;
 }
@@ -24,6 +26,10 @@ td{
 
 table{
     margin: 10% auto;
+}
+
+label{
+    font-size: 100%;
 }
 
 .diskDiv{
@@ -47,4 +53,17 @@ table{
 
 span{
     display: block;
+}
+
+.diskAmountDiv b{
+    display: block;
+}
+
+table{
+    background-color: #d6c59c;
+}
+
+#turnMsg{
+    margin: 10% 0;
+    color: white;
 }

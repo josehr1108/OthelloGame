@@ -6,6 +6,11 @@ dynamic disk/3.
 noDisk(X,Y):-
    \+disk(X,Y,_).
 
+arentMovements(Color):-
+   catch(possibleMovement(_,_,Color,_),
+   error(Err,_Context),
+   format('You done goofed! ~w\n', [Err])).
+
 placeDisks(BoardSize) :-
   Mid is div(BoardSize,2)-1,
   Next is Mid+1,
@@ -18,54 +23,54 @@ getPossibleMovements(Color):-
    (Color = "black" ->
          disk(X,Y,"black"),
          write("Ficha"),write("("),write(X),write(","),write(Y),write("):"),
-         inspectBottom(X,Y,"white"),
-         inspectTop(X,Y,"white"),
-         inspectLeft(X,Y,"white"),
-         inspectRight(X,Y,"white"),
-         inspectLeftTop(X,Y,"white"),
-         inspectRightTop(X,Y,"white"),
-         inspectLeftBottom(X,Y,"white"),
-         inspectRightBottom(X,Y,"white")
+         inspectBottom(X,Y,"white",X,Y),
+         inspectTop(X,Y,"white",X,Y),
+         inspectLeft(X,Y,"white",X,Y),
+         inspectRight(X,Y,"white",X,Y),
+         inspectLeftTop(X,Y,"white",X,Y),
+         inspectRightTop(X,Y,"white",X,Y),
+         inspectLeftBottom(X,Y,"white",X,Y),
+         inspectRightBottom(X,Y,"white",X,Y)
     ;
     Color = "white" ->
          disk(X,Y,"white"),
          write("Ficha"),write("("),write(X),write(","),write(Y),write("):"),
-         inspectBottom(X,Y,"black"),
-         inspectTop(X,Y,"black"),
-         inspectLeft(X,Y,"black"),
-         inspectRight(X,Y,"black"),
-         inspectLeftTop(X,Y,"black"),
-         inspectRightTop(X,Y,"black"),
-         inspectLeftBottom(X,Y,"black"),
-         inspectRightBottom(X,Y,"black")
+         inspectBottom(X,Y,"black",X,Y),
+         inspectTop(X,Y,"black",X,Y),
+         inspectLeft(X,Y,"black",X,Y),
+         inspectRight(X,Y,"black",X,Y),
+         inspectLeftTop(X,Y,"black",X,Y),
+         inspectRightTop(X,Y,"black",X,Y),
+         inspectLeftBottom(X,Y,"black",X,Y),
+         inspectRightBottom(X,Y,"black",X,Y)
     ).
 
-inspectBottom(X,Y,Color):-
+inspectBottom(X,Y,Color,XCopy,YCopy):-
    X2 is X+1,
    boardSize(Size),
-   (X2 >= Size->
+   (X2 >= Size-1->
       !
    ;
    disk(X2,Y,Color)->
       X3 is X2+1,
       noDisk(X3,Y),
       write("Jugada:"),write("("),write(X3),write(","),write(Y),write(")"),
-      assert(possibleMovement([X,Y],[X3,Y],Color,"bottom"))
+      assert(possibleMovement([XCopy,YCopy],[X3,Y],Color,"bottom"))
    ),!.
 
-inspectBottom(X,Y,Color):-
+inspectBottom(X,Y,Color,XCopy,YCopy):-
    X2 is X+1,
    boardSize(Size),
-   (X2 >= Size->
+   (X2 >= Size-1->
       !
    ;
    disk(X2,Y,Color)->
-      inspectBottom(X2,Y,Color)
+      inspectBottom(X2,Y,Color,XCopy,YCopy)
    ;
       !
    ),!.
 
-inspectTop(X,Y,Color):-
+inspectTop(X,Y,Color,XCopy,YCopy):-
    X2 is X-1,
    (X2 =< 0->
       !
@@ -74,21 +79,21 @@ inspectTop(X,Y,Color):-
       X3 is X2-1,
       noDisk(X3,Y),
       write("Jugada:"),write("("),write(X3),write(","),write(Y),write(")"),
-      assert(possibleMovement([X,Y],[X3,Y],Color,"top"))
+      assert(possibleMovement([XCopy,YCopy],[X3,Y],Color,"top"))
    ),!.
 
-inspectTop(X,Y,Color):-
+inspectTop(X,Y,Color,XCopy,YCopy):-
    X2 is X-1,
    (X2 =< 0->
       !
    ;
    disk(X2,Y,Color)->
-      inspectTop(X2,Y,Color)
+      inspectTop(X2,Y,Color,XCopy,YCopy)
    ;
       !
    ),!.
 
-inspectLeft(X,Y,Color):-
+inspectLeft(X,Y,Color,XCopy,YCopy):-
    Y2 is Y-1,
    (Y2 =< 0->
        !
@@ -97,46 +102,46 @@ inspectLeft(X,Y,Color):-
       Y3 is Y2-1,
       noDisk(X,Y3),
       write("Jugada:"),write("("),write(X),write(","),write(Y3),write(")"),
-      assert(possibleMovement([X,Y],[X,Y3],Color,"left"))
+      assert(possibleMovement([XCopy,YCopy],[X,Y3],Color,"left"))
    ),!.
 
-inspectLeft(X,Y,Color):-
+inspectLeft(X,Y,Color,XCopy,YCopy):-
    Y2 is Y-1,
    (Y2 =< 0->
        !
    ;
    disk(X,Y2,Color)->
-      inspectLeft(X,Y2,Color)
+      inspectLeft(X,Y2,Color,XCopy,YCopy)
    ;
       !
    ),!.
 
-inspectRight(X,Y,Color):-
+inspectRight(X,Y,Color,XCopy,YCopy):-
    Y2 is Y+1,
    boardSize(Size),
-   (Y2 >= Size->
+   (Y2 >= Size-1->
       !
    ;
    disk(X,Y2,Color)->
       Y3 is Y2+1,
       noDisk(X,Y3),
       write("Jugada:"),write("("),write(X),write(","),write(Y3),write(")"),
-      assert(possibleMovement([X,Y],[X,Y3],Color,"right"))
+      assert(possibleMovement([XCopy,YCopy],[X,Y3],Color,"right"))
    ),!.
 
-inspectRight(X,Y,Color):-
+inspectRight(X,Y,Color,XCopy,YCopy):-
    Y2 is Y+1,
    boardSize(Size),
-   (Y2 >= Size->
+   (Y2 >= Size-1->
       !
    ;
    disk(X,Y2,Color)->
-      inspectRight(X,Y2,Color)
+      inspectRight(X,Y2,Color,XCopy,YCopy)
    ;
       !
    ),!.
 
-inspectLeftTop(X,Y,Color):-
+inspectLeftTop(X,Y,Color,XCopy,YCopy):-
    X2 is X-1,
    Y2 is Y-1,
    (X2 =< 0->
@@ -150,10 +155,10 @@ inspectLeftTop(X,Y,Color):-
         Y3 is Y2-1,
         noDisk(X3,Y3),
         write("Jugada:"),write("("),write(X3),write(","),write(Y3),write(")"),
-        assert(possibleMovement([X,Y],[X3,Y3],Color,"leftTop"))
+        assert(possibleMovement([XCopy,YCopy],[X3,Y3],Color,"leftTop"))
    ),!.
 
-inspectLeftTop(X,Y,Color):-
+inspectLeftTop(X,Y,Color,XCopy,YCopy):-
    X2 is X-1,
    Y2 is Y-1,
    (X2 =< 0->
@@ -163,19 +168,19 @@ inspectLeftTop(X,Y,Color):-
        !
    ;
    disk(X2,Y2,Color)->
-       inspectLeftTop(X2,Y2,Color)
+       inspectLeftTop(X2,Y2,Color,XCopy,YCopy)
    ;
        !
    ),!.
 
-inspectRightTop(X,Y,Color):-
+inspectRightTop(X,Y,Color,XCopy,YCopy):-
    X2 is X-1,
    Y2 is Y+1,
    boardSize(Size),
    (X2 =< 0->
        !
    ;
-   Y2 >= Size->
+   Y2 >= Size-1->
        !
    ;
    disk(X2,Y2,Color)->
@@ -183,30 +188,30 @@ inspectRightTop(X,Y,Color):-
         Y3 is Y2+1,
         noDisk(X3,Y3),
         write("Jugada:"),write("("),write(X3),write(","),write(Y3),write(")"),
-        assert(possibleMovement([X,Y],[X3,Y3],Color,"rightTop"))
+        assert(possibleMovement([XCopy,YCopy],[X3,Y3],Color,"rightTop"))
    ),!.
 
-inspectRightTop(X,Y,Color):-
+inspectRightTop(X,Y,Color,XCopy,YCopy):-
    X2 is X-1,
    Y2 is Y+1,
    boardSize(Size),
    (X2 =< 0->
        !
    ;
-   Y2 >= Size->
+   Y2 >= Size-1->
        !
    ;
    disk(X2,Y2,Color)->
-       inspectRightTop(X2,Y2,Color)
+       inspectRightTop(X2,Y2,Color,XCopy,YCopy)
    ;
        !
    ),!.
 
-inspectLeftBottom(X,Y,Color):-
+inspectLeftBottom(X,Y,Color,XCopy,YCopy):-
    X2 is X+1,
    Y2 is Y-1,
    boardSize(Size),
-   (X2 >= Size->
+   (X2 >= Size-1->
        !
    ;
    Y2 =< 0->
@@ -217,34 +222,34 @@ inspectLeftBottom(X,Y,Color):-
         Y3 is Y2-1,
         noDisk(X3,Y3),
         write("Jugada:"),write("("),write(X3),write(","),write(Y3),write(")"),
-        assert(possibleMovement([X,Y],[X3,Y3],Color,"leftBottom"))
+        assert(possibleMovement([XCopy,YCopy],[X3,Y3],Color,"leftBottom"))
    ),!.
 
-inspectLeftBottom(X,Y,Color):-
+inspectLeftBottom(X,Y,Color,XCopy,YCopy):-
    X2 is X+1,
    Y2 is Y-1,
    boardSize(Size),
-   (X2 >= Size->
+   (X2 >= Size-1->
        !
    ;
    Y2 =< 0->
        !
    ;
    disk(X2,Y2,Color)->
-       inspectLeftBottom(X2,Y2,Color)
+       inspectLeftBottom(X2,Y2,Color,XCopy,YCopy)
    ;
        !
    ),!.
 
 
-inspectRightBottom(X,Y,Color):-
+inspectRightBottom(X,Y,Color,XCopy,YCopy):-
    X2 is X+1,
    Y2 is Y+1,
    boardSize(Size),
-   (X2 >= Size->
+   (X2 >= Size-1->
        !
    ;
-   Y2 >= Size->
+   Y2 >= Size-1->
        !
    ;
    disk(X2,Y2,Color)->
@@ -252,22 +257,22 @@ inspectRightBottom(X,Y,Color):-
         Y3 is Y2+1,
         noDisk(X3,Y3),
         write("Jugada:"),write("("),write(X3),write(","),write(Y3),write(")"),
-        assert(possibleMovement([X,Y],[X3,Y3],Color,"rightBottom"))
+        assert(possibleMovement([XCopy,YCopy],[X3,Y3],Color,"rightBottom"))
 
    ),!.
 
-inspectRightBottom(X,Y,Color):-
+inspectRightBottom(X,Y,Color,XCopy,YCopy):-
    X2 is X+1,
    Y2 is Y+1,
    boardSize(Size),
-   (X2 >= Size->
+   (X2 >= Size-1->
        !
    ;
-   Y2 >= Size->
+   Y2 >= Size-1->
        !
    ;
    disk(X2,Y2,Color)->
-       inspectRightBottom(X2,Y2,Color)
+       inspectRightBottom(X2,Y2,Color,XCopy,YCopy)
    ;
        !
    ),!.

@@ -4,18 +4,15 @@
         <h3>Othello</h3>
         <form>
             <label>Escoje el tamaño del tablero
-                <select ng-model="boardSize">
-                    <option value="4">4x4</option>
-                    <option value="5">5x5</option>
-                    <option value="6">6x6</option>
-                    <option value="7">7x7</option>
-                    <option value="8">8x8</option>
-                    <option value="9">9x9</option>
-                    <option value="10">10x10</option>
-                </select>
             </label>
+            <select ng-model="boardSize">
+                <option value="4">4x4</option>
+                <option value="6">6x6</option>
+                <option value="8">8x8</option>
+                <option value="10">10x10</option>
+            </select>
             <div>
-                <button type="submit" ng-click="playGame(boardSize)" class="success button">Jugar!</button>
+                <button type="submit" ng-click="playGame(boardSize)" class="success button"><b>Jugar!</b></button>
             </div>
         </form>
     </div>

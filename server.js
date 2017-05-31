@@ -30,20 +30,22 @@ app.post('/placeDisk',function (req,res) {
     res.send(200,{success:true});
 });
 
-app.get('/possibleMoves',function (req, res) {
+app.get('/possibleMoves/:colorParam',function (req, res) {
     swipl.call('retractall(possibleMovement(Q,W,E,R))');
+    let colorP = req.params.colorParam;
 
-    let query1 = new swipl.Query('getPossibleMovements("black")');
+    let query1 = new swipl.Query('getPossibleMovements("'+colorP+'")');
     let ret1 = null;
     let counter = 0;
     while (ret1 = query1.next()) {
         counter++;
+        console.log("entra al ciclo de movimientos");
     }
     query1.close();
 
+    let array = [];
     let query = new swipl.Query('possibleMovement(From,To,Color,Direction)');
     let ret = null;
-    let array = [];
     while (ret = query.next()) {
         let possibleMove = {};
 
@@ -87,6 +89,19 @@ app.get('/disks',function (req, res) {
     res.json(array);
 });
 
+app.get('/disks/:color',function (req, res) {
+    let colorP = req.params.color;
+
+    let query = new swipl.Query('disk(X,Y,"'+colorP+'")');
+    let ret = null;
+    let counter = 0;
+    while (ret = query.next()) {
+        counter++;
+    }
+    query.close();
+    res.send(200,{amount: counter});
+});
+
 app.get('/placeDisks/:boardSize',function (req, res) {
     swipl.call('retractall(disk(X,Y,C))');
     let size = req.params.boardSize;
@@ -96,7 +111,8 @@ app.get('/placeDisks/:boardSize',function (req, res) {
         res.send(200,{added: true});
     }else{
         console.log("Fallo agregando fichas");
-        res.send(303,{added: false});    }
+        res.send(303,{added: false});
+    }
 });
 
 app.listen(app.get('port'), function(){
@@ -144,7 +160,7 @@ function replaceDisks(from,to,color,direction){
             swipl.call('assert(disk('+x+','+y+',"'+color+'"))');
             console.log("Se cambio la ficha ("+x+","+y+")");
         }
-    } else if(direction == "leftBottom"){
+    }else if(direction == "leftBottom"){
         let x = from.xPos;
         for(let y = from.yPos-1; y > to.yPos; y--){
             x++;
@@ -152,7 +168,7 @@ function replaceDisks(from,to,color,direction){
             swipl.call('assert(disk('+x+','+y+',"'+color+'"))');
             console.log("Se cambio la ficha ("+x+","+y+")");
         }
-    } else if(direction == "rightBottom"){
+    }else if(direction == "rightBottom"){
         let x = from.xPos;
         for(let y = from.yPos+1; y < to.yPos; y++){
             x++;
