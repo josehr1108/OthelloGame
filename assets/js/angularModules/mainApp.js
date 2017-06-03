@@ -24,8 +24,10 @@ angular.module('mainApp', ['ngRoute'])
         $scope.possibleMoves = [];
         $scope.whiteMoves = [];
         $scope.turnMsg = "";
+        $scope.firstTimeFlag = true;
         $scope.blackAmount = 0;
         $scope.whiteAmount = 0;
+
         $scope.range = function(min, max) {
             let array = [];
             for (let i = min; i < max; i++) {
@@ -64,14 +66,20 @@ angular.module('mainApp', ['ngRoute'])
                     method: 'GET',
                     url: '/possibleMoves/white'
                 }).then(function successCallback(response) {
-                    let whiteMoves = response.data;
-                    $scope.whiteMoves = whiteMoves;
-                    if(whiteMoves == []){
+                    $scope.whiteMoves = response.data;
+                    if($scope.whiteMoves.length == 0){
+                        if($scope.possibleMoves.length == 0){
+                            alert("Ambos jugadores se quedaron sin jugadas, final de la partida.");
+                            let winner = ($scope.blackAmount > $scope.whiteAmount) ? "Jugador" : "Maquina";
+                            alert(winner+" gana.");
+                            return;
+                        }
                         alert("La maquina no tiene jugadas");
+                        $scope.turnMsg = "Tu turno";
                         $scope.refreshDisks();
                     }
                     else{
-                        let bestMove = $scope.getWhiteBestMove(whiteMoves);
+                        let bestMove = $scope.getWhiteBestMove($scope.whiteMoves);
                         console.log("Jugada blanco:");
                         console.log(bestMove);
                         $scope.whiteMakeMove(bestMove);
@@ -81,7 +89,7 @@ angular.module('mainApp', ['ngRoute'])
         };
         $scope.getWhiteBestMove = function (arrayMoves) {
             let bestAmountEatenDisk = 0;
-            let bestMoveObj = {};
+            let bestMoveObj = arrayMoves[0];
             for(let i = 0; i < arrayMoves.length; i++){
                 let currentMove = arrayMoves[i];
                 let currentAmountEatenDisk = $scope.getAmountEatenDisk(currentMove);
@@ -174,11 +182,10 @@ angular.module('mainApp', ['ngRoute'])
             }
             if($scope.possibleMoves.length == 0){
                 alert("No hay jugadas posibles");
-                return;
+                $scope.whitePlay();
             }
             else if(Object.keys(bestMove).length == 0){
                 alert("Jugada invalida");
-                return;
             }else{
                 $http({
                     method: 'POST',
@@ -212,6 +219,14 @@ angular.module('mainApp', ['ngRoute'])
                     $disk.addClass("diskDiv " + disk.color);
                 }
                 $scope.getBlackPossibleMoves();
+                if($scope.possibleMoves.length == 0){
+                    if($scope.firstTimeFlag){
+                        $scope.firstTimeFlag = false;
+                    }else{
+                        alert("Quedaste sin jugadas, juega la maquina.");
+                        $scope.whitePlay();
+                    }
+                }
                 $scope.getDisksAmount("white");
                 $scope.getDisksAmount("black");
             });
@@ -232,24 +247,6 @@ angular.module('mainApp', ['ngRoute'])
             });
         };
     })
-
-    /*
-    * $http({
-     method: 'POST',
-     url: '/placeDisk',
-     data: {from: obj.from,
-     to: to,
-     color: obj.color,
-     direction: obj.direction}
-     }).then(function successCallback(response) {
-     $scope.refreshDisks();
-     $scope.turnMsg = "Turno de la maquina";
-     $scope.whitePlay();
-     });
-     return;
-    *
-    * */
-
     .config(function($routeProvider, $locationProvider) {
         $routeProvider
             .when('/', {

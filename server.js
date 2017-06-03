@@ -3,6 +3,7 @@
  */
 let express = require('express');
 let app = express();
+let swipl = require('swipl');
 
 app.set('port', process.env.PORT || 3000);
 
@@ -10,9 +11,7 @@ app.use(express.static(__dirname + "/assets"));
 app.use(express.static(__dirname + "/public"));
 app.use(require('body-parser')());
 
-let swipl = require('swipl');
 swipl.call('consult(fichas)');
-
 
 app.post('/playGame', function(req, res) {
     let selectedOpt = req.body.boardSize;
@@ -32,6 +31,8 @@ app.post('/placeDisk',function (req,res) {
 
 app.get('/possibleMoves/:colorParam',function (req, res) {
     swipl.call('retractall(possibleMovement(Q,W,E,R))');
+    swipl.call('retractall(hasMoves(O,P))');
+
     let colorP = req.params.colorParam;
 
     let query1 = new swipl.Query('getPossibleMovements("'+colorP+'")');
@@ -43,35 +44,57 @@ app.get('/possibleMoves/:colorParam',function (req, res) {
     }
     query1.close();
 
-    let array = [];
-    let query = new swipl.Query('possibleMovement(From,To,Color,Direction)');
-    let ret = null;
-    while (ret = query.next()) {
-        let possibleMove = {};
-
-        let fromObj = {};
-        fromObj.xPos = ret.From.head;
-        fromObj.yPos = ret.From.tail.head;
-        possibleMove.from = fromObj;
-
-        let toObj = {};
-        toObj.xPos = ret.To.head;
-        toObj.yPos = ret.To.tail.head;
-        possibleMove.to = toObj;
-
-        let definitiveColor = "";
-        if(ret.Color == "white")
-            definitiveColor = "black";
-        else if(ret.Color == "black")
-            definitiveColor = "white";
-
-        possibleMove.color = definitiveColor;
-        possibleMove.direction = ret.Direction;
-
-        array.push(possibleMove);
+    let colorChange = (colorP == "black") ? "white" : "black";
+    let haveMoves = false;
+    let query2 = new swipl.Query('hasMoves("'+colorChange+'",HaveMove)');
+    let ret2 = null;
+    while (ret2 = query2.next()) {
+        if(ret2.HaveMove == 1){
+            haveMoves = true;
+            break;
+        }else{
+            haveMoves = false;
+        }
     }
-    query.close();
-    res.send(200,array);
+    query2.close();
+    console.log("Hay movimientos: "+haveMoves);
+
+    if(haveMoves){
+        let array = [];
+        let query = new swipl.Query('possibleMovement(From,To,Color,Direction)');
+        let ret = null;
+        while (ret = query.next()) {
+            let possibleMove = {};
+
+            let fromObj = {};
+            fromObj.xPos = ret.From.head;
+            fromObj.yPos = ret.From.tail.head;
+            possibleMove.from = fromObj;
+
+            let toObj = {};
+            toObj.xPos = ret.To.head;
+            toObj.yPos = ret.To.tail.head;
+            possibleMove.to = toObj;
+
+            let definitiveColor = "";
+            if(ret.Color == "white")
+                definitiveColor = "black";
+            else if(ret.Color == "black")
+                definitiveColor = "white";
+
+            possibleMove.color = definitiveColor;
+            possibleMove.direction = ret.Direction;
+
+            array.push(possibleMove);
+        }
+        query.close();
+        res.send(200,array);
+    }
+    else{
+        res.send(200,[]);
+    }
+
+
 });
 
 app.get('/disks',function (req, res) {
